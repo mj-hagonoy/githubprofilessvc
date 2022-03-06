@@ -8,10 +8,10 @@ A small Golang service that accepts a list of github usernames (max 10 names) an
 - number of public repos
 
 ## REST API
-### Get users
+### Get github users
 Returns public information of github users
 ```
-GET /users?username=<list of users>
+GET /api/v1/github/users?username=<list of users>
 ```
 where:
 
@@ -45,6 +45,23 @@ cd githubprofilessvc
 docker-compose up -d
 ```
 
+## Configuration
+See [config.yaml](./config.yaml)
+```
+host: "localhost"
+port: ":8080"
+github:
+  get-user-api: "https://api.github.com/users"
+cache:
+  type: "redis"
+  host:  "localhost"
+  port: ":6379"
+  expiry-mins: 2
+```
+
+### Environment variables:
+- `REDIS_URL` : redis url to be used, default value "localhost:6379"
+
 ## External API
 - [`GET https://api.github.com/users/{username}`](https://docs.github.com/en/rest/reference/users#get-a-user)
 
@@ -52,3 +69,7 @@ docker-compose up -d
 - [`gopkg.in/yaml.v2`](https://github.com/go-yaml/yaml/tree/v2.4.0) 
 - [`github.com/go-redis/redis/v8`](https://github.com/go-redis/redis)
 - [`github.com/stretchr/testify`](https://github.com/stretchr/testify)
+
+
+## License
+See [`Apache License v2.0`](./LICENSE)
