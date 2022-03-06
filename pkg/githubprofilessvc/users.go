@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"sync"
 )
@@ -29,9 +30,11 @@ func (srv GithubUsersService) GetUsers(ctx context.Context, usernames ...string)
 	getUser := func(wg *sync.WaitGroup, username string) {
 		defer wg.Done()
 		user, err := srv.getUser(ctx, username)
-		if err == nil {
-			users = append(users, user)
+		if err != nil {
+			log.Println(err)
+			return
 		}
+		users = append(users, *user)
 	}
 
 	for _, username := range usernames {
@@ -43,22 +46,27 @@ func (srv GithubUsersService) GetUsers(ctx context.Context, usernames ...string)
 	return users, nil
 }
 
-func (srv GithubUsersService) getUser(ctx context.Context, username string) (GithubUser, error) {
-	var user GithubUser
+func (srv GithubUsersService) getUser(ctx context.Context, username string) (*GithubUser, error) {
 	resp, err := http.Get(fmt.Sprintf("https://api.github.com/users/%s", username))
 	if err != nil {
-		return user, err
+		return nil, err
 	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("status: %v", resp.Status)
+	}
+
 	defer resp.Body.Close()
 	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return user, err
+		return nil, err
 	}
 
+	var user GithubUser
 	err = json.Unmarshal(bodyBytes, &user)
 	if err != nil {
-		return user, err
+		return nil, err
 	}
 
-	return user, nil
+	return &user, nil
 }
