@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"sync"
 
+	"github.com/mj-hagonoy/githubprofilessvc/pkg/cache"
 	"github.com/mj-hagonoy/githubprofilessvc/pkg/errors"
 )
 
@@ -19,7 +20,13 @@ type GithubUser struct {
 	PublicRepos int    `json:"public_repos"`
 }
 
-type GithubUsersService struct{}
+func (user GithubUser) MarshalBinary() ([]byte, error) {
+	return json.Marshal(user)
+}
+
+type GithubUsersService struct {
+	Cache cache.Cache
+}
 
 func (srv GithubUsersService) GetUsers(ctx context.Context, usernames ...string) ([]GithubUser, error) {
 	if len(usernames) > 10 {
@@ -48,6 +55,14 @@ func (srv GithubUsersService) GetUsers(ctx context.Context, usernames ...string)
 }
 
 func (srv GithubUsersService) getUser(ctx context.Context, username string) (*GithubUser, error) {
+	data := srv.Cache.Get(username)
+	var user GithubUser
+	if data != nil {
+		if err := json.Unmarshal([]byte(*data), &user); err == nil {
+			return &user, nil
+		}
+		//in case of marshall error, attempt to get data from github api
+	}
 	resp, err := http.Get(fmt.Sprintf("https://api.github.com/users/%s", username))
 	if err != nil {
 		return nil, err
@@ -63,11 +78,11 @@ func (srv GithubUsersService) getUser(ctx context.Context, username string) (*Gi
 		return nil, err
 	}
 
-	var user GithubUser
 	err = json.Unmarshal(bodyBytes, &user)
 	if err != nil {
 		return nil, err
 	}
 
+	srv.Cache.Set(username, user)
 	return &user, nil
 }
