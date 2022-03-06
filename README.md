@@ -87,5 +87,26 @@ cache:
 - [`github.com/stretchr/testify`](https://github.com/stretchr/testify)
 
 
+## Testing
+In root directory, run below command
+```
+go test ./...
+```
+
+## Requirements Checklist
+- [x] Return the following github user information: name, login, company, number of followers, number of public repos
+- [x] Max input of 10 names
+- [x] Returned users are sorted alphabetically by name
+- [x] If username not found, should not fail other requested usernames
+- [x] Implement caching layer with 2 minutes expiry. If user's information is cached, it should NOT hit Github again
+- [x] error handlings and frameworks
+- [x] use regular http calls to hit github's API
+- [x] use github API endpoint https://api.github.com/users/{username
+
+## TODO
+- [ ] Add unit tests and integration tests
+- [ ] Deploy application
+- [ ] Update logging to have (1) separate info and error loggers (2) log to external file
+
 ## License
 See [`Apache License v2.0`](./LICENSE)
