@@ -1,4 +1,4 @@
-package githubprofilessvc
+package users
 
 import (
 	"context"

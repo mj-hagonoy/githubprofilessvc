@@ -1,8 +1,8 @@
 package main
 
-import "github.com/mj-hagonoy/githubprofilessvc/pkg/githubprofilessvc"
+import "github.com/mj-hagonoy/githubprofilessvc/pkg/server"
 
 func main() {
-	var server *githubprofilessvc.Server = githubprofilessvc.NewServer()
+	var server *server.Server = server.NewServer()
 	server.Run()
 }

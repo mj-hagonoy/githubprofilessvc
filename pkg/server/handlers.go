@@ -1,10 +1,11 @@
-package githubprofilessvc
+package server
 
 import (
 	"net/http"
 	"strings"
 
 	"github.com/mj-hagonoy/githubprofilessvc/pkg/errors"
+	"github.com/mj-hagonoy/githubprofilessvc/pkg/users"
 )
 
 func (s *Server) handleIndex() http.HandlerFunc {
@@ -17,7 +18,7 @@ func (s *Server) handleIndex() http.HandlerFunc {
 
 func (s *Server) handleGithubUsersGet() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		srv := GithubUsersService{}
+		srv := users.GithubUsersService{}
 		result, err := srv.GetUsers(r.Context(), strings.Split(r.URL.Query().Get("usernames"), ",")...)
 		if err != nil {
 			errors.Send(err)

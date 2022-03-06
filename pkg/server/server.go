@@ -1,4 +1,4 @@
-package githubprofilessvc
+package server
 
 import (
 	"encoding/json"
