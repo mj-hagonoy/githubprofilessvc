@@ -18,6 +18,8 @@ services:
   redis:
     image: "redis:alpine"
     restart: unless-stopped
+    volumes:
+      - ./redis-volume:/data
     networks:
       - backend
 
