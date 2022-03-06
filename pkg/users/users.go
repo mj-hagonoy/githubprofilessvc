@@ -35,7 +35,7 @@ type GithubUsersService struct {
 func NewUsersService() *GithubUsersService {
 	return &GithubUsersService{
 		Cache: cache.NewRedisCache(
-			fmt.Sprintf("%s%s", config.GetConfig().Cache.Host, config.GetConfig().Cache.Port),
+			config.GetConfig().RedisUrl(),
 			"",
 			0,
 			time.Minute*time.Duration(config.GetConfig().Cache.ExpiryMins),

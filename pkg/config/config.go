@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 
 	yaml "gopkg.in/yaml.v2"
 )
@@ -24,6 +25,14 @@ type Config struct {
 
 func (c Config) ApiUrl() string {
 	return fmt.Sprintf("http://%s:%s/api/v1", c.Host, c.Port)
+}
+
+func (c Config) RedisUrl() string {
+	envValue := os.Getenv("REDIS_URL")
+	if envValue == "" {
+		return fmt.Sprintf("%s%s", c.Cache.Host, c.Cache.Port)
+	}
+	return envValue
 }
 
 var conf Config
