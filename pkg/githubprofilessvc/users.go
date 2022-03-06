@@ -20,22 +20,30 @@ type GithubUser struct {
 type GithubUsersService struct{}
 
 func (srv GithubUsersService) GetUsers(ctx context.Context, usernames ...string) ([]GithubUser, error) {
+	if len(usernames) > 10 {
+		return nil, fmt.Errorf("max of 10 usernames")
+	}
+
 	var users []GithubUser
 	var wg sync.WaitGroup
-	for _, username := range usernames {
-		go func(wg *sync.WaitGroup, username string) {
-			defer wg.Done()
-			user, err := srv.GetUser(ctx, username)
-			if err == nil {
-				users = append(users, user)
-			}
-		}(&wg, username)
+	getUser := func(wg *sync.WaitGroup, username string) {
+		defer wg.Done()
+		user, err := srv.getUser(ctx, username)
+		if err == nil {
+			users = append(users, user)
+		}
 	}
+
+	for _, username := range usernames {
+		wg.Add(1)
+		go getUser(&wg, username)
+	}
+
 	wg.Wait()
 	return users, nil
 }
 
-func (srv GithubUsersService) GetUser(ctx context.Context, username string) (GithubUser, error) {
+func (srv GithubUsersService) getUser(ctx context.Context, username string) (GithubUser, error) {
 	var user GithubUser
 	resp, err := http.Get(fmt.Sprintf("https://api.github.com/users/%s", username))
 	if err != nil {
