@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"sort"
 	"sync"
+	"unicode/utf8"
 
 	"github.com/mj-hagonoy/githubprofilessvc/pkg/cache"
 	"github.com/mj-hagonoy/githubprofilessvc/pkg/errors"
@@ -28,12 +30,28 @@ type GithubUsersService struct {
 	Cache cache.Cache
 }
 
-func (srv GithubUsersService) GetUsers(ctx context.Context, usernames ...string) ([]GithubUser, error) {
+type GithubUserArray []GithubUser
+
+func (users GithubUserArray) Len() int {
+	return len(users)
+}
+
+func (users GithubUserArray) Less(i, j int) bool {
+	iRune, _ := utf8.DecodeRuneInString(users[i].Name)
+	jRune, _ := utf8.DecodeRuneInString(users[j].Name)
+	return int32(iRune) < int32(jRune)
+}
+
+func (users GithubUserArray) Swap(i, j int) {
+	users[i], users[j] = users[j], users[i]
+}
+
+func (srv GithubUsersService) GetUsers(ctx context.Context, usernames ...string) (GithubUserArray, error) {
 	if len(usernames) > 10 {
 		return nil, errors.MaxLenghtError(10, len(usernames))
 	}
 
-	var users []GithubUser
+	var users GithubUserArray
 	var wg sync.WaitGroup
 	getUser := func(wg *sync.WaitGroup, username string) {
 		defer wg.Done()
@@ -49,8 +67,9 @@ func (srv GithubUsersService) GetUsers(ctx context.Context, usernames ...string)
 		wg.Add(1)
 		go getUser(&wg, username)
 	}
-
 	wg.Wait()
+
+	sort.Sort(users)
 	return users, nil
 }
 
