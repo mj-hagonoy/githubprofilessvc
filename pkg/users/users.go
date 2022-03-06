@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"sort"
+	"strings"
 	"sync"
 	"time"
 	"unicode/utf8"
@@ -45,6 +46,10 @@ func NewUsersService() *GithubUsersService {
 
 type GithubUserArray []GithubUser
 
+func (users GithubUserArray) MarshalBinary() ([]byte, error) {
+	return json.Marshal(users)
+}
+
 func (users GithubUserArray) Len() int {
 	return len(users)
 }
@@ -65,6 +70,14 @@ func (srv GithubUsersService) GetUsers(ctx context.Context, usernames ...string)
 	}
 
 	var users GithubUserArray
+
+	data := srv.Cache.Get(strings.Join(usernames, ","))
+	if data != nil {
+		if err := json.Unmarshal([]byte(*data), &users); err == nil {
+			return users, nil
+		}
+	}
+
 	var wg sync.WaitGroup
 	getUser := func(wg *sync.WaitGroup, username string) {
 		defer wg.Done()
@@ -83,6 +96,7 @@ func (srv GithubUsersService) GetUsers(ctx context.Context, usernames ...string)
 	wg.Wait()
 
 	sort.Sort(users)
+	go srv.Cache.Set(strings.Join(usernames, ","), users)
 	return users, nil
 }
 
@@ -118,6 +132,6 @@ func (srv GithubUsersService) getUser(ctx context.Context, username string) (*Gi
 		return nil, err
 	}
 
-	srv.Cache.Set(username, user)
+	go srv.Cache.Set(username, user)
 	return &user, nil
 }
