@@ -51,3 +51,7 @@ func ParseConfig(file string) error {
 func GetConfig() Config {
 	return conf
 }
+
+func NewConfig() *Config {
+	return &conf
+}
