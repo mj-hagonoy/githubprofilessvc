@@ -38,7 +38,7 @@ func (s *Server) HttpError(w http.ResponseWriter, err error, httpCode int) {
 	}
 }
 
-func (s *Server) Respond(w http.ResponseWriter, data interface{}, httpCode int) {
+func (s *Server) JSON(w http.ResponseWriter, data interface{}, httpCode int) {
 	bytesData, err := json.Marshal(data)
 	if err != nil {
 		s.HttpError(w, err, http.StatusInternalServerError)

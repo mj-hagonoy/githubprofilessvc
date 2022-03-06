@@ -10,7 +10,7 @@ import (
 
 func (s *Server) handleIndex() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		s.Respond(w, map[string]string{
+		s.JSON(w, map[string]string{
 			"message": "OK",
 		}, http.StatusOK)
 	}
@@ -26,6 +26,6 @@ func (s *Server) handleGithubUsersGet() http.HandlerFunc {
 			return
 		}
 
-		s.Respond(w, result, http.StatusOK)
+		s.JSON(w, result, http.StatusOK)
 	}
 }
