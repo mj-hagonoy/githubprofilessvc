@@ -110,3 +110,6 @@ go test ./...
 
 ## License
 See [`Apache License v2.0`](./LICENSE)
+
+## Links
+- [LinkedIn](https://www.linkedin.com/in/jenessa-hagonoy-023b09b1/)
