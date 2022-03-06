@@ -8,9 +8,11 @@ import (
 	"net/http"
 	"sort"
 	"sync"
+	"time"
 	"unicode/utf8"
 
 	"github.com/mj-hagonoy/githubprofilessvc/pkg/cache"
+	"github.com/mj-hagonoy/githubprofilessvc/pkg/config"
 	"github.com/mj-hagonoy/githubprofilessvc/pkg/errors"
 )
 
@@ -28,6 +30,17 @@ func (user GithubUser) MarshalBinary() ([]byte, error) {
 
 type GithubUsersService struct {
 	Cache cache.Cache
+}
+
+func NewUsersService() *GithubUsersService {
+	return &GithubUsersService{
+		Cache: cache.NewRedisCache(
+			fmt.Sprintf("%s%s", config.GetConfig().Cache.Host, config.GetConfig().Cache.Port),
+			"",
+			0,
+			time.Minute*time.Duration(config.GetConfig().Cache.ExpiryMins),
+		),
+	}
 }
 
 type GithubUserArray []GithubUser
@@ -74,6 +87,9 @@ func (srv GithubUsersService) GetUsers(ctx context.Context, usernames ...string)
 }
 
 func (srv GithubUsersService) getUser(ctx context.Context, username string) (*GithubUser, error) {
+	if username == "" {
+		return nil, fmt.Errorf("empty username")
+	}
 	data := srv.Cache.Get(username)
 	var user GithubUser
 	if data != nil {
@@ -82,7 +98,7 @@ func (srv GithubUsersService) getUser(ctx context.Context, username string) (*Gi
 		}
 		//in case of marshall error, attempt to get data from github api
 	}
-	resp, err := http.Get(fmt.Sprintf("https://api.github.com/users/%s", username))
+	resp, err := http.Get(fmt.Sprintf("%s/%s", config.GetConfig().Github.GetUserAPI, username))
 	if err != nil {
 		return nil, err
 	}

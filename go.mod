@@ -2,7 +2,10 @@ module github.com/mj-hagonoy/githubprofilessvc
 
 go 1.17
 
-require github.com/stretchr/testify v1.7.0
+require (
+	github.com/stretchr/testify v1.7.0
+	gopkg.in/yaml.v2 v2.4.0
+)
 
 require (
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect

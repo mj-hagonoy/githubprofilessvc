@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/mj-hagonoy/githubprofilessvc/pkg/config"
 	"github.com/mj-hagonoy/githubprofilessvc/pkg/errors"
 )
 
@@ -22,7 +23,7 @@ func NewServer() *Server {
 
 func (s *Server) Run() {
 	go errors.Run()
-	if err := http.ListenAndServe(":8080", s.router); err != nil {
+	if err := http.ListenAndServe(config.GetConfig().Port, s.router); err != nil {
 		errors.Send(err)
 		errors.Stop()
 	}
