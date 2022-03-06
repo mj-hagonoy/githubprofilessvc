@@ -19,7 +19,7 @@ type GithubUser struct {
 
 type GithubUsersService struct{}
 
-func (srv GithubUsersService) GetUsers(ctx context.Context, usernames []string) ([]GithubUser, error) {
+func (srv GithubUsersService) GetUsers(ctx context.Context, usernames ...string) ([]GithubUser, error) {
 	var users []GithubUser
 	var wg sync.WaitGroup
 	for _, username := range usernames {
