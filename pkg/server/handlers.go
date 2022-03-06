@@ -19,13 +19,22 @@ func (s *Server) handleIndex() http.HandlerFunc {
 func (s *Server) handleGithubUsersGet() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		srv := users.NewUsersService()
-		result, err := srv.GetUsers(r.Context(), strings.Split(r.URL.Query().Get("usernames"), ",")...)
+		usernames := strings.Split(r.URL.Query().Get("usernames"), ",")
+		if len(usernames) == 0 {
+			s.NoContent(w)
+			return
+		}
+		result, err := srv.GetUsers(r.Context(), usernames...)
 		if err != nil {
 			errors.Send(err)
 			s.HttpError(w, err, http.StatusBadRequest)
 			return
 		}
 
+		if len(result) == 0 {
+			s.NoContent(w)
+			return
+		}
 		s.JSON(w, result, http.StatusOK)
 	}
 }

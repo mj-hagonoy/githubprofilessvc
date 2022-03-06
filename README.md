@@ -17,8 +17,9 @@ where:
 
 - `username` : is a comma separated list of strings
 
-Response
+Default Response
 ```
+Status: 200 OK
 Headers:
     - Content-type: "application/json"
 Body: 
@@ -31,6 +32,21 @@ Body:
         "public_repos": 6
     }
 ]
+```
+
+Empty Response
+```
+Status: 204 No Content
+```
+
+Error Response: Limit reached
+```
+Status: 400 Bad Request
+
+Body: 
+{
+    "error": "input error: expected 10, got 17"
+}
 ```
 
 ## Dependencies

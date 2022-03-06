@@ -51,3 +51,7 @@ func (s *Server) JSON(w http.ResponseWriter, data interface{}, httpCode int) {
 		errors.Send(err)
 	}
 }
+
+func (s *Server) NoContent(w http.ResponseWriter) {
+	w.WriteHeader(http.StatusNoContent)
+}
