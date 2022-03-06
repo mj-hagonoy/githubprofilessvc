@@ -31,7 +31,10 @@ func (s *Server) Run() {
 func (s *Server) HttpError(w http.ResponseWriter, err error, httpCode int) {
 	w.Header().Add("Content-type", "application/json")
 	w.WriteHeader(httpCode)
-	w.Write([]byte(fmt.Sprintf(`{"error": "%v"}`, err)))
+	_, err = w.Write([]byte(fmt.Sprintf(`{"error": "%v"}`, err)))
+	if err != nil {
+		errors.Send(err)
+	}
 }
 
 func (s *Server) Respond(w http.ResponseWriter, data interface{}, httpCode int) {
@@ -42,5 +45,8 @@ func (s *Server) Respond(w http.ResponseWriter, data interface{}, httpCode int) 
 	}
 	w.Header().Add("Content-type", "application/json")
 	w.WriteHeader(httpCode)
-	w.Write(bytesData)
+	_, err = w.Write(bytesData)
+	if err != nil {
+		errors.Send(err)
+	}
 }
