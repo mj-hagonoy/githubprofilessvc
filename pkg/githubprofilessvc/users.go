@@ -5,9 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"sync"
+
+	"github.com/mj-hagonoy/githubprofilessvc/pkg/errors"
 )
 
 type GithubUser struct {
@@ -22,7 +23,7 @@ type GithubUsersService struct{}
 
 func (srv GithubUsersService) GetUsers(ctx context.Context, usernames ...string) ([]GithubUser, error) {
 	if len(usernames) > 10 {
-		return nil, fmt.Errorf("max of 10 usernames")
+		return nil, errors.MaxLenghtError(10, len(usernames))
 	}
 
 	var users []GithubUser
@@ -31,7 +32,7 @@ func (srv GithubUsersService) GetUsers(ctx context.Context, usernames ...string)
 		defer wg.Done()
 		user, err := srv.getUser(ctx, username)
 		if err != nil {
-			log.Println(err)
+			errors.Send(err)
 			return
 		}
 		users = append(users, *user)
@@ -53,7 +54,7 @@ func (srv GithubUsersService) getUser(ctx context.Context, username string) (*Gi
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("status: %v", resp.Status)
+		return nil, errors.HttpNotFoundError
 	}
 
 	defer resp.Body.Close()

@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"strings"
+
+	"github.com/mj-hagonoy/githubprofilessvc/pkg/errors"
 )
 
 func (s *Server) handleIndex() http.HandlerFunc {
@@ -19,11 +21,13 @@ func (s *Server) handleGithubUsersGet() http.HandlerFunc {
 		srv := GithubUsersService{}
 		result, err := srv.GetUsers(r.Context(), strings.Split(r.URL.Query().Get("usernames"), ",")...)
 		if err != nil {
+			errors.Send(err)
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 		bytesData, err := json.Marshal(result)
 		if err != nil {
+			errors.Send(err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}

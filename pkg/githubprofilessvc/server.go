@@ -1,8 +1,9 @@
 package githubprofilessvc
 
 import (
-	"fmt"
 	"net/http"
+
+	"github.com/mj-hagonoy/githubprofilessvc/pkg/errors"
 )
 
 type Server struct {
@@ -18,6 +19,9 @@ func NewServer() *Server {
 }
 
 func (s *Server) Run() {
-	err := http.ListenAndServe(":8080", s.router)
-	fmt.Println(err)
+	go errors.Run()
+	if err := http.ListenAndServe(":8080", s.router); err != nil {
+		errors.Send(err)
+		errors.Stop()
+	}
 }
