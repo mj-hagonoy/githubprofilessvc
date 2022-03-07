@@ -50,11 +50,11 @@ Another library worth mentioning is [`ristretto`](https://github.com/dgraph-io/r
 ### Get github users
 Returns public information of github users
 ```
-GET /api/v1/github/users?username=<list of users>
+GET /api/v1/github/users?usernames=<list of users>
 ```
 where:
 
-- `username` : is a comma separated list of strings
+- `usernames` : is a comma separated list of strings
 
 Default Response
 ```
