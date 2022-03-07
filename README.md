@@ -7,6 +7,24 @@ A small Golang service that accepts a list of github usernames (max 10 names) an
 - number of followers
 - number of public repos
 
+## Table of contents
+  * [Architecture](#architecture)
+  * [REST API](#rest-api)
+    + [Get github users](#get-github-users)
+  * [Dependencies](#dependencies)
+  * [Installation](#installation)
+  * [Configuration](#configuration)
+    + [Environment variables:](#environment-variables-)
+  * [External API](#external-api)
+  * [External packages](#external-packages)
+  * [Testing](#testing)
+  * [Requirements Checklist](#requirements-checklist)
+  * [TODO](#todo)
+  * [License](#license)
+
+## Architecture
+//pending
+
 ## REST API
 ### Get github users
 Returns public information of github users
