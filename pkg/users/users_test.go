@@ -37,7 +37,7 @@ func TestGetUsers(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`
+		_, _ = w.Write([]byte(`
 		{
 			"name": "Jen Hagonoy",
 			"login": "mj-hagonoy",
