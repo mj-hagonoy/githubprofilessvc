@@ -18,6 +18,10 @@ func (s *Server) handleIndex() http.HandlerFunc {
 
 func (s *Server) handleGithubUsersGet() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			http.NotFound(w, r)
+			return
+		}
 		srv := users.NewUsersService()
 		usernames := strings.Split(r.URL.Query().Get("usernames"), ",")
 		if len(usernames) == 0 {
