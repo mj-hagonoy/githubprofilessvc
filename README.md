@@ -155,6 +155,7 @@ See [golangci-lint](https://golangci-lint.run/)
 - [ ] Deploy application (+load balancer, +api gateway, GCP or Azure)
 - [ ] CI/CD
 - [ ] Update logging to have (1) separate info and error loggers (2) log to external file
+- [ ] Documentation (ie comments)
 
 ## License
 See [`Apache License v2.0`](./LICENSE)
