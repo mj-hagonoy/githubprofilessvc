@@ -12,7 +12,9 @@ type Config struct {
 	Host   string `yaml:"host"`
 	Port   string `yaml:"port"`
 	Github struct {
-		GetUserAPI string `yaml:"get-user-api"`
+		Username    string `yaml:"username"`
+		AccessToken string `yaml:"access-token"`
+		GetUserAPI  string `yaml:"get-user-api"`
 	} `yaml:"github"`
 	Cache struct {
 		Type       string `yaml:"redis"`
