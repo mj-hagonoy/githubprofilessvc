@@ -51,3 +51,7 @@ func (s *Server) JSON(w http.ResponseWriter, data interface{}, httpCode int) {
 func (s *Server) NoContent(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusNoContent)
 }
+
+func (s *Server) NotFound(w http.ResponseWriter, r *http.Request) {
+	http.NotFound(w, r)
+}
