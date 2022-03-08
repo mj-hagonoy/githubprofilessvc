@@ -31,9 +31,11 @@ func Send(err error) {
 }
 
 func Run() {
-	for err := range errors {
-		log.Printf("ERROR: %v\n", err)
-	}
+	go func() {
+		for err := range errors {
+			log.Printf("ERROR: %v\n", err)
+		}
+	}()
 }
 
 func Stop() {
