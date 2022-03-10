@@ -5,7 +5,7 @@ COPY go.mod ./
 COPY go.sum ./
 RUN go mod download
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o build/main ./cmd
+RUN GOOS=linux go build -o build/main ./cmd
 RUN ls 
 
 FROM alpine:latest

@@ -21,12 +21,8 @@ func NewServer() *Server {
 	return s
 }
 
-func (s *Server) Run() {
-	go errors.Run()
-	if err := http.ListenAndServe(config.GetConfig().Port, s.router); err != nil {
-		errors.Send(err)
-		errors.Stop()
-	}
+func (s *Server) Run() error {
+	return http.ListenAndServe(config.GetConfig().Port, s.router)
 }
 
 func (s *Server) HttpError(w http.ResponseWriter, err error, httpCode int) {
@@ -54,4 +50,8 @@ func (s *Server) JSON(w http.ResponseWriter, data interface{}, httpCode int) {
 
 func (s *Server) NoContent(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func (s *Server) NotFound(w http.ResponseWriter, r *http.Request) {
+	http.NotFound(w, r)
 }

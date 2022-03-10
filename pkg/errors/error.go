@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"sync"
 )
 
 var (
@@ -23,7 +24,8 @@ func (e *HttpError) Error() string {
 }
 
 var (
-	errors = make(chan error, 1)
+	errors    chan error
+	initError sync.Once
 )
 
 func Send(err error) {
@@ -31,9 +33,14 @@ func Send(err error) {
 }
 
 func Run() {
-	for err := range errors {
-		log.Printf("ERROR: %v\n", err)
-	}
+	initError.Do(func() {
+		errors = make(chan error, 1)
+	})
+	go func() {
+		for err := range errors {
+			log.Printf("ERROR: %v\n", err)
+		}
+	}()
 }
 
 func Stop() {

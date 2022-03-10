@@ -150,10 +150,12 @@ See [golangci-lint](https://golangci-lint.run/)
 - [x] use github API endpoint https://api.github.com/users/{username
 
 ## TODO
+- [ ] Security (ie Authorization)
 - [ ] Add unit tests and integration tests
 - [ ] Deploy application (+load balancer, +api gateway, GCP or Azure)
 - [ ] CI/CD
 - [ ] Update logging to have (1) separate info and error loggers (2) log to external file
+- [ ] Documentation (ie comments)
 
 ## License
 See [`Apache License v2.0`](./LICENSE)

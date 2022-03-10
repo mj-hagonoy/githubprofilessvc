@@ -112,7 +112,15 @@ func (srv GithubUsersService) getUser(ctx context.Context, username string) (*Gi
 		}
 		//in case of marshall error, attempt to get data from github api
 	}
-	resp, err := http.Get(fmt.Sprintf("%s/%s", config.GetConfig().Github.GetUserAPI, username))
+	httpGet := &http.Client{}
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s/%s", config.GetConfig().Github.GetUserAPI, username), nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Authorization", fmt.Sprintf("token %s", config.GetConfig().Github.AccessToken))
+	req.Header.Set("User-Agent", config.GetConfig().Github.Username)
+	req.Header.Set("Accept", "application/vnd.github.v3+json")
+	resp, err := httpGet.Do(req)
 	if err != nil {
 		return nil, err
 	}

@@ -1,6 +1,8 @@
 host: "localhost"
 port: ":8080"
 github:
+  username: "mj-hagonoy"
+  access-token: "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"
   get-user-api: "https://api.github.com/users"
 cache:
   type: "redis"
